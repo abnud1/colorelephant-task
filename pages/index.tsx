@@ -23,25 +23,25 @@ const Home: NextPage<HomeProps> = (props: HomeProps) => {
     order === "asc" ? a.rating - b.rating : b.rating - a.rating
   );
   return (
-    <>
+    <div className="text-4xl sm:text-base">
       <h1>Top Movies</h1>
       <div>
         <button
           onClick={() => setOrder("asc")}
           type="button"
-          className="bg-blue-500 w-12 rounded-lg mr-1"
+          className="bg-blue-500 w-48 sm:w-12 rounded-lg mr-1"
         >
           ASC
         </button>
         <button
           onClick={() => setOrder("desc")}
           type="button"
-          className="bg-blue-500 w-12 rounded-lg"
+          className="bg-blue-500 w-48 sm:w-12 rounded-lg"
         >
           DESC
         </button>
       </div>
-      <table className="text-4xl sm:text-base">
+      <table>
         <thead>
           <tr>
             <th>#</th>
@@ -75,7 +75,7 @@ const Home: NextPage<HomeProps> = (props: HomeProps) => {
           ))}
         </tbody>
       </table>
-    </>
+    </div>
   );
 };
 export const getServerSideProps: GetServerSideProps = async () => {
