@@ -2,7 +2,6 @@ import axios from "axios";
 import dayjs from "dayjs";
 import type { GetServerSideProps, NextPage } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import { TMDB_API_KEY, TMDB_BASE_URL } from "components/consts";
 import { TMDBConfiguration, TMDBMovie } from "components/tmdb";
 interface Movie {
@@ -21,7 +20,7 @@ const Home: NextPage<HomeProps> = (props: HomeProps) => {
   return (
     <>
       <h1>Top Movies</h1>
-      <table>
+      <table className="text-4xl sm:text-base">
         <thead>
           <tr>
             <th>#</th>
@@ -39,12 +38,13 @@ const Home: NextPage<HomeProps> = (props: HomeProps) => {
               <td>{m.title}</td>
               <td>{m.year}</td>
               <td>{m.rating}</td>
-              <td className="relative w-96 h-96">
-                <Image
+              <td className="relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                   alt={m.title}
-                  src={`${posters_base_url}original${m.image}?api_key=${TMDB_API_KEY}`}
-                  layout="fill"
-                  objectFit="cover"
+                  src={`${posters_base_url}w500${m.image}?api_key=${TMDB_API_KEY}`}
+                  width={500}
+                  height={750}
                 />
               </td>
               <td>
