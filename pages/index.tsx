@@ -4,7 +4,10 @@ import type { GetServerSideProps, NextPage } from "next";
 import Link from "next/link";
 import { TMDB_API_KEY, TMDB_BASE_URL } from "components/consts";
 import { TMDBConfiguration, TMDBMovie } from "components/tmdb";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStar as faRegularStar } from "@fortawesome/free-regular-svg-icons";
+import { faStar as faSolidStar } from "@fortawesome/free-solid-svg-icons";
 interface Movie {
   id: number;
   image: string;
@@ -19,9 +22,16 @@ interface HomeProps {
 const Home: NextPage<HomeProps> = (props: HomeProps) => {
   const { topMovies, posters_base_url } = props;
   const [order, setOrder] = useState<"asc" | "desc">("desc");
+  const [starredMovies, setStarredMovies] = useState<number[]>([]);
   const sortedMovies = [...topMovies].sort((a, b) =>
     order === "asc" ? a.rating - b.rating : b.rating - a.rating
   );
+  useEffect(() => {
+    setStarredMovies(JSON.parse(localStorage.getItem("starredMovies") ?? "[]"));
+  }, []);
+  useEffect(() => {
+    localStorage.setItem("starredMovies", JSON.stringify(starredMovies));
+  }, [starredMovies]);
   return (
     <div className="text-4xl sm:text-base">
       <h1>Top Movies</h1>
@@ -55,7 +65,25 @@ const Home: NextPage<HomeProps> = (props: HomeProps) => {
         <tbody className="text-center">
           {sortedMovies.map((m) => (
             <tr key={m.id}>
-              <td></td>
+              <td>
+                <FontAwesomeIcon
+                  size="2x"
+                  icon={
+                    starredMovies.includes(m.id) ? faSolidStar : faRegularStar
+                  }
+                  fill={starredMovies.includes(m.id) ? "yellow" : "white"}
+                  onClick={() => {
+                    const newStarredMovies = [...starredMovies];
+                    const index = newStarredMovies.findIndex((v) => m.id === v);
+                    if (index >= 0) {
+                      newStarredMovies.splice(index, 1);
+                    } else {
+                      newStarredMovies.push(m.id);
+                    }
+                    setStarredMovies(newStarredMovies);
+                  }}
+                />
+              </td>
               <td>{m.title}</td>
               <td>{m.year}</td>
               <td>{m.rating}</td>
