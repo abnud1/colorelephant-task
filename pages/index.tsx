@@ -4,12 +4,13 @@ import type { GetServerSideProps, NextPage } from "next";
 import Link from "next/link";
 import { TMDB_API_KEY, TMDB_BASE_URL } from "components/consts";
 import { TMDBConfiguration, TMDBMovie } from "components/tmdb";
+import { useState } from "react";
 interface Movie {
   id: number;
-  image?: string;
-  year?: number;
-  rating?: number;
-  title?: string;
+  image: string;
+  year: number;
+  rating: number;
+  title: string;
 }
 interface HomeProps {
   topMovies: Movie[];
@@ -17,9 +18,29 @@ interface HomeProps {
 }
 const Home: NextPage<HomeProps> = (props: HomeProps) => {
   const { topMovies, posters_base_url } = props;
+  const [order, setOrder] = useState<"asc" | "desc">("desc");
+  const sortedMovies = [...topMovies].sort((a, b) =>
+    order === "asc" ? a.rating - b.rating : b.rating - a.rating
+  );
   return (
     <>
       <h1>Top Movies</h1>
+      <div>
+        <button
+          onClick={() => setOrder("asc")}
+          type="button"
+          className="bg-blue-500 w-12 rounded-lg mr-1"
+        >
+          ASC
+        </button>
+        <button
+          onClick={() => setOrder("desc")}
+          type="button"
+          className="bg-blue-500 w-12 rounded-lg"
+        >
+          DESC
+        </button>
+      </div>
       <table className="text-4xl sm:text-base">
         <thead>
           <tr>
@@ -32,7 +53,7 @@ const Home: NextPage<HomeProps> = (props: HomeProps) => {
           </tr>
         </thead>
         <tbody className="text-center">
-          {topMovies.map((m) => (
+          {sortedMovies.map((m) => (
             <tr key={m.id}>
               <td></td>
               <td>{m.title}</td>
