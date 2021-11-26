@@ -1,6 +1,7 @@
 import axios from "axios";
 import dayjs from "dayjs";
-import type { GetServerSideProps, GetStaticProps, NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
+import Link from "next/link";
 import Image from "next/image";
 import { TMDB_API_KEY, TMDB_BASE_URL } from "components/consts";
 import { TMDBConfiguration, TMDBMovie } from "components/tmdb";
@@ -28,6 +29,7 @@ const Home: NextPage<HomeProps> = (props: HomeProps) => {
             <th className="w-12">Year</th>
             <th className="w-16">Rating</th>
             <th>Poster Image</th>
+            <th>Details</th>
           </tr>
         </thead>
         <tbody className="text-center">
@@ -45,6 +47,9 @@ const Home: NextPage<HomeProps> = (props: HomeProps) => {
                   objectFit="cover"
                 />
               </td>
+              <td>
+                <Link href={`/movie/${m.id}`}>Details</Link>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -56,7 +61,6 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const configResponse = await axios.get<TMDBConfiguration>(
     `${TMDB_BASE_URL}/configuration?api_key=${TMDB_API_KEY}`
   );
-  console.log(configResponse.data.images.poster_sizes);
   const response = await axios.get<{ results: TMDBMovie[] }>(
     `${TMDB_BASE_URL}/movie/top_rated?api_key=${TMDB_API_KEY}`
   );
@@ -67,7 +71,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
         id: v.id,
         image: v.poster_path,
         year: dayjs(v.release_date).year(),
-        rating: v.vote_count,
+        rating: v.vote_average,
         title: v.title,
       })),
     },

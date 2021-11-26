@@ -2,7 +2,7 @@ export interface TMDBMovie {
   id: number;
   poster_path: string;
   release_date: string;
-  vote_count: number;
+  vote_average: number;
   title: string;
 }
 export interface TMDBConfiguration {
